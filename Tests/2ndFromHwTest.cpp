@@ -5,7 +5,7 @@
 class HWTester : public ::testing::Test {
  protected:
   void SetUp() {
-    CF_Grammar G("S->aA|bB;A->aC|bS;B->aS|bK;K->aB;C->bA|aR|;R->aRR|bC;");
+    CF_Grammar G("S->aA|bB;A->aC|bS;B->aS|bK;K->aB;C->bA||aR;R->aRR|bC;");
     G.ToHomski();
     M = new CYK_Manager(G);
     /*G = new CF_Grammar({'S', 'A', 'B', 'C', 'K', 'R'},

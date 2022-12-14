@@ -2,6 +2,7 @@
 #include "CYK_Manager.hpp"
 
 int main() {
-  CF_Grammar G("S->ABC;A->;B->bB|;C->aCa|CCa|aS|;");
+  CF_Grammar G("S->aA|bB;A->aC|bS;B->aS|bK;K->aB;C->bA||aR;R->aRR|bC;");
+  G.ToHomski();
   return 0;
 }

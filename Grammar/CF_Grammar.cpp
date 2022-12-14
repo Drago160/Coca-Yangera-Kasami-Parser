@@ -128,6 +128,9 @@ CF_Grammar::CF_Grammar(const std::string& rules) {
         }
         ++i;
       }
+      if (path.empty()) {
+        path.push_back(0);
+      }
       rules_[curr_nonterm].insert(path);
       if (i >= rules.size()) {
         break;
