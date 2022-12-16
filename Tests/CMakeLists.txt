@@ -26,6 +26,7 @@ add_executable(BasicTests
         Regexes_tests.cpp
         2ndFromHwTest.cpp
         diff_psp_tests.cpp
+        fromCW_test.cpp
             )
 
 
