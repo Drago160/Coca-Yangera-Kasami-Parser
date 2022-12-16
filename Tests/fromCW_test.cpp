@@ -5,7 +5,7 @@
 class CW_Tester : public ::testing::Test {
  protected:
   void SetUp() {
-    CF_Grammar G("S->A|AA|AAA;A->bAA|cAA|aC;C->aB|bA|cA|;B->bC|cC|aBB;");
+    CF_Grammar G("S->A|AA|AAA;A->bAA|cAA|aC;C->aB|bA|cA|;B->bC|cC|aBB;"); // |w|_a - |w|_b - |w|_c \in {1, 2, 3}
     G.ToHomski();
     M = new CYK_Manager(G);
   }
