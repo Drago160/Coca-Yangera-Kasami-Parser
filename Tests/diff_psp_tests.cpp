@@ -12,6 +12,10 @@ class DiffPspTest : public ::testing::Test {
     M1 = new CYK_Manager(G1);
     M2 = new CYK_Manager(G2);
   }
+   void TearDown() {
+    delete M1;
+    delete M2;
+  }
   CYK_Manager* M1;
   CYK_Manager* M2;
 };

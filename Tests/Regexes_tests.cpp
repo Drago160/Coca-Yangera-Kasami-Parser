@@ -9,6 +9,9 @@ class Regex1 : public ::testing::Test {
     G1.ToHomski();
     M1 = new CYK_Manager(G1);
   }
+  void TearDown() {
+    delete M1;
+  }
   CYK_Manager* M1; // a+
 };
 
@@ -18,6 +21,9 @@ class Regex2 : public ::testing::Test {
     CF_Grammar G2("S->aB|b;B->bB|bS|bb;");
     G2.ToHomski();
     M2 = new CYK_Manager(G2);
+  }
+  void TearDown() {
+    delete M2;
   }
   CYK_Manager* M2; // (ab+)*b
 };
@@ -29,6 +35,9 @@ class Regex3 : public ::testing::Test {
     CF_Grammar G3("S->aS|bS|B;B->bbC;C->aC|bC|aa|ba;");
     G3.ToHomski();
     M3 = new CYK_Manager(G3);
+  }
+  void TearDown() {
+    delete M3;
   }
   CYK_Manager* M3; // (a+b)*bb(a+b)+a
 };

@@ -11,6 +11,7 @@ add_executable(run
         Grammar/CF_Grammar.cpp
         CYK/CYK_Manager.cpp
         CYK/CYK_Manager.hpp
+        Grammar/Parser.cpp
         )
 
 add_subdirectory(Tests)

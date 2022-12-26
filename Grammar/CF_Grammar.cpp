@@ -1,10 +1,20 @@
 #include "CF_Grammar.h"
+using word_code = std::vector<int>;
+using all_rights = std::unordered_set<word_code, Vector_hash>;
 
 int CF_Grammar::GetStartNonTerm() const { return start_terminal_; }
 
-const std::unordered_map<int, std::unordered_set<std::vector<int>, Vector_hash>>& CF_Grammar::GetRules() {
+const std::unordered_map<int, all_rights>& CF_Grammar::GetRules() const {
   return rules_;
-};
+}
+
+bool CF_Grammar::IsNonTerminal(char c) {
+  return (c >= 'A' && c <= 'Z');
+}
+
+bool CF_Grammar::IsTerminal(char c) {
+  return !IsNonTerminal(c);
+}
 
 int CF_Grammar::GetCharCode(char c) { return terminal_mapping_[c]; }
 
@@ -23,14 +33,14 @@ void CF_Grammar::InsertRule(int src, const std::vector<int>& path) {
   }
 }
 
-CF_Grammar::CF_Grammar(std::unordered_set<char> non_termianls,
+CF_Grammar::CF_Grammar(std::unordered_set<char> non_terminals,
                        std::unordered_set<char> terminals,
                        std::unordered_map<char, std::vector<std::string>> rules,
                        char S) {
   int terminal_code = -1;
   for (char c : terminals) {
     terminal_mapping_[c] = terminal_code;
-    termianls_.insert(terminal_code);
+    terminals_.insert(terminal_code);
     terminal_code--;
   }
 
@@ -41,7 +51,7 @@ CF_Grammar::CF_Grammar(std::unordered_set<char> non_termianls,
 
   std::unordered_set<word_code, Vector_hash> empty_set;
 
-  for (char N : non_termianls) {
+  for (char N : non_terminals) {
     if (N != S) {
       non_terminal_mapping[N] = non_terminal_code;
       non_terminals_.insert(non_terminal_code);
@@ -68,14 +78,13 @@ CF_Grammar::CF_Grammar(std::unordered_set<char> non_termianls,
   }
 }
 
-bool CF_Grammar::IsTerminal(char c) {
-  return ('a' <= c && c <= 'z') || addition_alphabet.contains(c);
+
+CF_Grammar::CF_Grammar(const std::string& rules) {
+  Parser builder(rules, this);
+  builder.ParseFormat();
 }
 
-bool CF_Grammar::IsNonTerminal(char c) {
-  return ('A' <= c && c <= 'Z');
-}
-
+/*
 CF_Grammar::CF_Grammar(const std::string& rules) {
   start_terminal_ = 2;
   int term_code = -1;
@@ -87,7 +96,7 @@ CF_Grammar::CF_Grammar(const std::string& rules) {
     if (IsTerminal(c)) {
       if (!terminal_mapping_.contains(c)) {
         terminal_mapping_.insert({c, term_code});
-        termianls_.insert(term_code);
+        terminals_.insert(term_code);
         --term_code;
       }
     } else if (IsNonTerminal(c)) {
@@ -139,11 +148,12 @@ CF_Grammar::CF_Grammar(const std::string& rules) {
   }
   RestoreNonTerminals();
 }
+*/
 
 void CF_Grammar::CountMaxNonTerm() {
-  max_non_term_ = 2;
+  max_nonterm_ = 2;
   for (const auto& rule : rules_) {
-    max_non_term_ = std::max(rule.first, max_non_term_);
+    max_nonterm_ = std::max(rule.first, max_nonterm_);
   }
 }
 
@@ -278,11 +288,11 @@ void CF_Grammar::HandleMixed() {
 
   std::unordered_map<int, int> term_to_new_non_term;
 
-  for (int term : termianls_) {
-    ++max_non_term_;
-    term_to_new_non_term[term] = max_non_term_;
-    InsertRule(max_non_term_, {term});
-    non_terminals_.insert(max_non_term_);
+  for (int term : terminals_) {
+    ++max_nonterm_;
+    term_to_new_non_term[term] = max_nonterm_;
+    InsertRule(max_nonterm_, {term});
+    non_terminals_.insert(max_nonterm_);
   }
 
   for (auto& [src, r_parts] : rules_) {
@@ -300,27 +310,27 @@ void CF_Grammar::HandleMixed() {
   }
 
   new_Grammar.terminal_mapping_ = terminal_mapping_;
-  new_Grammar.termianls_ = termianls_;
+  new_Grammar.terminals_ = terminals_;
   new_Grammar.start_terminal_ = start_terminal_;
   (*this) = new_Grammar;
   RestoreNonTerminals();
   CountMaxNonTerm();
 }
 
-void SplitRule(CF_Grammar& G, std::vector<int> dst, int current) {
+void CF_Grammar::SplitRule(CF_Grammar& grammar, std::vector<int> dst, int current) {
   size_t i = 0;
   while (dst.size() - i > 2) {
-    ++G.max_non_term_;
-    G.InsertRule(current, {dst[i], G.max_non_term_});
-    current = G.max_non_term_;
+    ++grammar.max_nonterm_;
+    grammar.InsertRule(current, {dst[i], grammar.max_nonterm_});
+    current = grammar.max_nonterm_;
     ++i;
   }
-  G.InsertRule(current, {dst[i], dst[i + 1]});
+  grammar.InsertRule(current, {dst[i], dst[i + 1]});
 }
 
 void CF_Grammar::HandleLong() {
   CF_Grammar new_Grammar;
-  new_Grammar.max_non_term_ = max_non_term_;
+  new_Grammar.max_nonterm_ = max_nonterm_;
   for (const auto& [src, r_parts] : rules_) { // Перебираем правила B->w1|w2|...
     for (const auto& dst : r_parts) { // перебираем w1, w2, ...
       if (dst.size() > 2) {
@@ -333,7 +343,7 @@ void CF_Grammar::HandleLong() {
 
 
   new_Grammar.terminal_mapping_ = terminal_mapping_;
-  new_Grammar.termianls_ = termianls_;
+  new_Grammar.terminals_ = terminals_;
   new_Grammar.start_terminal_ = start_terminal_;
   *this = new_Grammar;
   RestoreNonTerminals();
@@ -350,7 +360,7 @@ bool CF_Grammar::ContainRule(int src, const std::vector<int>& dst) {
 }
 
 void CF_Grammar::HandleEpsGenerative() {
-  boost::dynamic_bitset<> eps_gen_mask(max_non_term_ + 1, 0);
+  boost::dynamic_bitset<> eps_gen_mask(max_nonterm_ + 1, 0);
 
   for (const auto& [src, rule] : rules_) { // те что выводят eps за шаг
     if (rule.contains({0})) {
@@ -424,7 +434,7 @@ void CF_Grammar::HandleEpsGenerative() {
     new_Grammar.InsertRule(start_terminal_, {0});
   }
   new_Grammar.terminal_mapping_ = terminal_mapping_;
-  new_Grammar.termianls_ = termianls_;
+  new_Grammar.terminals_ = terminals_;
   new_Grammar.start_terminal_ = start_terminal_;
   *this = new_Grammar;
   RestoreNonTerminals();
@@ -472,7 +482,7 @@ void CF_Grammar::HandleOneLetterWord() {
   }
 
   new_Grammar.terminal_mapping_ = terminal_mapping_;
-  new_Grammar.termianls_ = termianls_;
+  new_Grammar.terminals_ = terminals_;
   new_Grammar.start_terminal_ = start_terminal_;
   *this = new_Grammar;
   RestoreNonTerminals();

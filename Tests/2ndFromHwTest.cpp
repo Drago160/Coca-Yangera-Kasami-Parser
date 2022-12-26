@@ -21,6 +21,9 @@ class HWTester : public ::testing::Test {
                         'S');
                         */
   }
+  void TearDown() {
+    delete M;
+  }
   CYK_Manager* M;
 };
 

@@ -9,6 +9,9 @@ class BalancedTest : public ::testing::Test {
     G.ToHomski();
     M = new CYK_Manager(G);
   }
+   void TearDown() {
+    delete M;
+  }
   CYK_Manager* M;
 };
 TEST_F(BalancedTest, BasicTest1) {

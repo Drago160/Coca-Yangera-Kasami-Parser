@@ -22,6 +22,6 @@ class CYK_Manager {
   bool IsEmpty(const std::string& word);
   void InitDP(const std::string& word);
   void ProcessBlocks(size_t length, const std::string& word);
-  std::unordered_map<int, std::unordered_set<Segm, Segm_hash>> dp; // dp[A] = {{l, r} : A=>w[l:r]}
+  std::unordered_map<int, std::unordered_set<Segm, Segm_hash>> correct_dests; // correct_dests[A] = {{l, r} : A=>w[l:r]}
   CF_Grammar G;
 };

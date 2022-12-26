@@ -12,6 +12,10 @@ class PspTest : public ::testing::Test {
     M1 = new CYK_Manager(G1);
     M2 = new CYK_Manager(G2);
   }
+  void TearDown() {
+    delete M1;
+    delete M2;
+  }
   CYK_Manager* M1;
   CYK_Manager* M2;
 };
@@ -49,7 +53,7 @@ TEST_F(PspTest, LongTest2) {
 TEST_F(PspTest, RandomStressTests) {
   //  Generate psp with size near 1000
   const size_t iter_nums = 30;
-  const size_t min_size = 20;
+  const size_t min_size = 40;
   std::string str;
   for (size_t i = 0; i < iter_nums; ++i) {
     size_t breacket_res = 0;

@@ -21,13 +21,14 @@ add_executable(BasicTests
         ../Grammar/CF_Grammar.cpp
         ../CYK/CYK_Manager.hpp
         ../CYK/CYK_Manager.cpp
-        Balanced_tests.cpp
-        psp_tests.cpp
-        Regexes_tests.cpp
-        2ndFromHwTest.cpp
-        diff_psp_tests.cpp
-        fromCW_test.cpp
-            )
+		../Grammar/Parser.cpp
+	Balanced_tests.cpp
+	psp_tests.cpp
+	Regexes_tests.cpp
+	2ndFromHwTest.cpp
+	diff_psp_tests.cpp
+	fromCW_test.cpp
+    )
 
 
 
