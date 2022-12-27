@@ -18,9 +18,12 @@ cd ..
 ### Запуск  
 main можно исполнить, исполнив build/run   
 - ./build/run    
+
+протестировать внутренние методы для преобразования к НФ и проверки парсера:  
+- ./Tests/bin/inside_tests  
  
 Тесты прогнать можно исполнив Tests/bin/BasicTests  
-- ./Tests/bin/BasicTests
+- ./Tests/bin/basic_tests  
 
 ### Формат ввода грамматики
 
@@ -29,7 +32,8 @@ CF_Grammar G("S->w1|w2|w3|...|wn;A->u1|u2|u3|...|un;B->.......");
 не забывайте ставить ";"  
 
 ### Структура
-- CG_Grammar - грамматика, к которой кроме построения есть метод ToChomsky()  
-- ToChomsky приводит ее к НФ Хомского  
-- CYK_Manager - в конструкторе принимает CF_Grammar, при этом требует, чтобы CF_Grammar была в НФ Хомского, иначе UB  
+- CG_Grammar - грамматика - базовый класс  
+- ChomskyGrammar - грамматика которая в конструкторе от строки приводится к НФ  
+- Builder - нужен для конструктора ChomskyGrammar  
+- CYK_Manager - в конструкторе принимает ChomskyGrammar   
 - У CYK_Manager'а есть метод Recognize(word) - возвращает true/false - принадлежит ли слово языку привееденной грамматики  
