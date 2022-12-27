@@ -5,8 +5,7 @@
 class BalancedTest : public ::testing::Test {
  protected:
   void SetUp() {
-    CF_Grammar G("S->aA|bB|;A->aAA|bS|a;B->bBB|aS|b;");
-    G.ToHomski();
+    ChomskyGrammar G("S->aA|bB|;A->aAA|bS|a;B->bBB|aS|b;");
     M = new CYK_Manager(G);
   }
    void TearDown() {

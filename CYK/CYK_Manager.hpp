@@ -16,7 +16,7 @@ struct Segm_hash
 
 class CYK_Manager {
  public:
-  CYK_Manager (const CF_Grammar& Homski_Grammar);
+  CYK_Manager (const ChomskyGrammar& grammar);
   bool Recognize(const std::string& word);
  private:
   bool IsEmpty(const std::string& word);

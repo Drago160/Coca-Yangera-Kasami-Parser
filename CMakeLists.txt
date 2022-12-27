@@ -8,16 +8,19 @@ set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" ${CMAKE_SOURCE_DIR}/cmake)
 
 add_executable(run
         main.cpp
-        Grammar/CF_Grammar.cpp
         CYK/CYK_Manager.cpp
         CYK/CYK_Manager.hpp
-        Grammar/Parser.cpp
+        Grammar/src/CF_Grammar.cpp
+        Grammar/src/Parser.cpp
+        Grammar/src/ChomskyBuilder.cpp
+        Grammar/include/CF_Grammar.h
+        Grammar/include/Builder.hpp
         )
 
 add_subdirectory(Tests)
 
 include_directories(
-        Grammar
+        Grammar/include
         CYK
 )
 

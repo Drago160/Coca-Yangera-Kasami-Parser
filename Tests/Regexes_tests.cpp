@@ -5,8 +5,7 @@
 class Regex1 : public ::testing::Test {
  protected:
   void SetUp() {
-    CF_Grammar G1("S->aA|Aa|A;A->aA|a;");
-    G1.ToHomski();
+    ChomskyGrammar G1("S->aA|Aa|A;A->aA|a;");
     M1 = new CYK_Manager(G1);
   }
   void TearDown() {
@@ -18,8 +17,7 @@ class Regex1 : public ::testing::Test {
 class Regex2 : public ::testing::Test {
  protected:
   void SetUp() {
-    CF_Grammar G2("S->aB|b;B->bB|bS|bb;");
-    G2.ToHomski();
+    ChomskyGrammar G2("S->aB|b;B->bB|bS|bb;");
     M2 = new CYK_Manager(G2);
   }
   void TearDown() {
@@ -32,8 +30,7 @@ class Regex2 : public ::testing::Test {
 class Regex3 : public ::testing::Test {
  protected:
   void SetUp() {
-    CF_Grammar G3("S->aS|bS|B;B->bbC;C->aC|bC|aa|ba;");
-    G3.ToHomski();
+    ChomskyGrammar G3("S->aS|bS|B;B->bbC;C->aC|bC|aa|ba;");
     M3 = new CYK_Manager(G3);
   }
   void TearDown() {

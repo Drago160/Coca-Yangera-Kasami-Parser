@@ -5,10 +5,8 @@
 class DiffPspTest : public ::testing::Test {
  protected:
   void SetUp() {
-    CF_Grammar G1("S->(S)S|[S]S|{S}S|;");
-    G1.ToHomski();
-    CF_Grammar G2("S->(F)F|[F]F|{F}F|;F->(F)F|[F]F|{F}F|;");
-    G2.ToHomski();
+    ChomskyGrammar G1("S->(S)S|[S]S|{S}S|;");
+    ChomskyGrammar G2("S->(F)F|[F]F|{F}F|;F->(F)F|[F]F|{F}F|;");
     M1 = new CYK_Manager(G1);
     M2 = new CYK_Manager(G2);
   }

@@ -1,4 +1,4 @@
-#include "CF_Grammar.h"
+#include "Parser.hpp"
 
 using word_code = std::vector<int>;
 
@@ -33,27 +33,27 @@ void CF_Grammar::Parser::ReadRule() {
 
 void CF_Grammar::Parser::InsertNewRightPart(char src, const std::string& dst) {
   int src_code = GetCode(src);
-  if (grammar_ptr_->rules_.contains(src_code)) {
-    grammar_ptr_->rules_[src_code].insert(InCodeWord(dst));
+  if (grammar_.rules_.contains(src_code)) {
+    grammar_.rules_[src_code].insert(InCodeWord(dst));
   } else {
-    grammar_ptr_->rules_.insert({src_code, {InCodeWord(dst)}});
+    grammar_.rules_.insert({src_code, {InCodeWord(dst)}});
   }
 }
 
 int CF_Grammar::Parser::GetCode(char c) {
   if (CF_Grammar::IsNonTerminal(c)) {
-    if (grammar_ptr_->nonterminal_mapping_.contains(c)) {
-      return grammar_ptr_->nonterminal_mapping_[c];
+    if (grammar_.nonterminal_mapping_.contains(c)) {
+      return grammar_.nonterminal_mapping_[c];
     } else {
-      grammar_ptr_->nonterminal_mapping_[c] = ++(grammar_ptr_->max_nonterm_);
-      return grammar_ptr_->nonterminal_mapping_[c];
+      grammar_.nonterminal_mapping_[c] = ++(grammar_.max_nonterm_);
+      return grammar_.nonterminal_mapping_[c];
     }
   }
-  if (grammar_ptr_->terminal_mapping_.contains(c)) {
-    return grammar_ptr_->terminal_mapping_[c];
+  if (grammar_.terminal_mapping_.contains(c)) {
+    return grammar_.terminal_mapping_[c];
   } else {
-    grammar_ptr_->terminal_mapping_[c] = --grammar_ptr_->min_term_;
-    return grammar_ptr_->terminal_mapping_[c];
+    grammar_.terminal_mapping_[c] = --grammar_.min_term_;
+    return grammar_.terminal_mapping_[c];
   }
 }
 
@@ -73,17 +73,17 @@ void CF_Grammar::Parser::HandleNonAndTerminals() {
     if (c == '-' || c == '\n' || c == '|' || c == '>' || c == ' ' || c == ';') {
       continue;
     }
-    if (grammar_ptr_->terminal_mapping_.contains(c)) {
-      grammar_ptr_->terminals_.insert(GetCode(c));
+    if (grammar_.terminal_mapping_.contains(c)) {
+      grammar_.terminals_.insert(GetCode(c));
     } else {
-      grammar_ptr_->non_terminals_.insert(GetCode(c));
+      grammar_.non_terminals_.insert(GetCode(c));
     }
   }
 }
 
 void CF_Grammar::Parser::ParseFormat() {
-  grammar_ptr_->start_terminal_ = 2;
-  grammar_ptr_->nonterminal_mapping_['S'] = 2;
+  grammar_.start_terminal_ = 2;
+  grammar_.nonterminal_mapping_['S'] = 2;
   while (read_idx < input_.size() - 1) {
     ReadRule();
   }

@@ -1,10 +1,9 @@
 #include "CF_Grammar.h"
 #include "CYK_Manager.hpp"
+#include "iostream"
 
 int main() {
-  CF_Grammar G("S->(S)S|;");
-
-  int a  = 1;
-  G.ToHomski();
-  return 0;
+  ChomskyGrammar G("S->a;");
+  CYK_Manager m(G);
+  std::cout << m.Recognize("a");
 }

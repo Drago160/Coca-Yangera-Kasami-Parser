@@ -1,7 +1,7 @@
 #include "CYK_Manager.hpp"
 
-CYK_Manager::CYK_Manager(const CF_Grammar& Homski_Grammar) {
-  G = Homski_Grammar;
+CYK_Manager::CYK_Manager(const ChomskyGrammar& Chomsky_Grammar) {
+  G = Chomsky_Grammar;
 }
 
 bool CYK_Manager::IsEmpty(const std::string& word) { return word.empty(); }

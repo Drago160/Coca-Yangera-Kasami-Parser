@@ -7,6 +7,7 @@
 #include <boost/dynamic_bitset.hpp>
 
 const std::unordered_set<char> addition_alphabet = {'(', ')', '[', ']', '{', '}'};
+class ParseTester;
 
 struct Vector_hash {
   std::size_t operator()(const std::vector<int>& vec) const {
@@ -17,12 +18,12 @@ struct Vector_hash {
     }
   }
 };
-
 class CF_Grammar {
+
+ public:
   using word_code = std::vector<int>;
   using all_rights = std::unordered_set<word_code, Vector_hash>;
 
- public:
   CF_Grammar();
   CF_Grammar(std::unordered_set<char> non_terminals,  //  <N, Sigma, P, S>
              std::unordered_set<char> terminals,
@@ -35,50 +36,32 @@ class CF_Grammar {
              char S);
 
   int GetStartNonTerm() const;
-  void ToHomski();
   void InsertRule(int src, const std::vector<int>& path);
   const std::unordered_map<int, all_rights>& GetRules() const;             // P
   int GetCharCode(char c);
   const std::unordered_set<int>& GetNonTerms();                       // N
+  const std::unordered_set<int>& GetTerms();                       // N
 
  private:
+
+  class Parser;
+
+  class ChomskyBuilder {
+   public:
+    ChomskyBuilder(CF_Grammar& grammar) : grammar_(grammar) {}
+   private:
+    CF_Grammar& grammar_;
+  };
+
+ protected:
 
   static bool IsTerminal(char c);
   static bool IsNonTerminal(char c);
 
-  class Parser {
-   public:
-    Parser(const std::string input, CF_Grammar* grammar_ptr)
-        : input_(input), grammar_ptr_(grammar_ptr) {};
-    void ParseFormat();
-
-   private:
-    void ReadRule();
-    int GetCode(char c);
-    word_code InCodeWord(const std::string& str);
-    void InsertNewRightPart(char src, const std::string& dst);
-    std::string ExtractSegm(size_t left, size_t right);
-    void HandleNonAndTerminals();
-    CF_Grammar* grammar_ptr_;
-    std::string input_;
-    size_t read_idx = 0;
-  };
-
+  int max_nonterm_ = 2;
   void RestoreNonTerminals();
-  void CrateRightNonTerm(auto& src);
   void CountMaxNonTerm();
   bool ContainRule(int src, const std::vector<int>& dst);
-  void SplitRule(CF_Grammar& grammar, std::vector<int> dst, int current);
-
-  void DeleteNonGenerative();
-  void DeleteUnReachable();
-  void HandleMixed();
-  void HandleLong();
-  void HandleEpsGenerative();
-  void HandleEmptyWord();
-  void HandleOneLetterWord();
-
-  void Rebuild();
 
   std::unordered_set<int> terminals_;                           // Sigma
   std::unordered_set<int> non_terminals_;                       // N
@@ -86,8 +69,21 @@ class CF_Grammar {
   std::unordered_map<char, int> terminal_mapping_;
   std::unordered_map<char, int> nonterminal_mapping_;
   int start_terminal_ = 2;                                          // S
-  int max_nonterm_ = 2;
   int min_term_ = 0;
 
   friend Parser;
+  friend ParseTester;
+};
+
+class ChomskyGrammar : public CF_Grammar {
+ public:
+  ChomskyGrammar(const std::string& input);
+  ChomskyGrammar();
+
+ private:
+  class Builder;
+  friend Builder;
+ public:
+  class BuildTester;
+  friend BuildTester;
 };
